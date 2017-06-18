@@ -3,7 +3,8 @@ package foo
 sourcedir = src
 
 modules =
-  HexagonalSNCF
+  HexagonalSNCF,
+  ReservationExpr
 
 executable = TrainReservation
 main = Main
