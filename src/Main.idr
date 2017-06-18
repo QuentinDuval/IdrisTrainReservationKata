@@ -21,8 +21,15 @@ import ReservationEval
 -- * By having a dedicated DSL Monad, you can ensure the code follows the rules
 --------------------------------------------------------------------------------
 
+sendReservation : Nat -> IO ()
+sendReservation seatCount = do
+  result <- evalReservation $ reserve (MkReservationRequest seatCount 10)
+  printLn result
+
 main : IO ()
 main = do
-  let request = MkReservationRequest 10 10
-  result <- evalReservation (reserve request)
-  printLn result
+  putStrLn "> [Test] Number of seats to reserve:"
+  seatCount <- map cast getLine
+  when (seatCount > 0) $ do
+    sendReservation seatCount
+    main
