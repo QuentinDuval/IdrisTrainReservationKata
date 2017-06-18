@@ -4,9 +4,7 @@ import ReservationExpr
 
 
 --------------------------------------------------------------------------------
--- Interpreter: Transformation from the abstract problem to real world
---
--- Here, we implement a fake interpreter than for the example
+-- Interpreter: Transformation from the abstract problem to real world (fake one here)
 --------------------------------------------------------------------------------
 
 export
@@ -16,10 +14,13 @@ interface SPI spi where
   confirmCommand : spi -> Reservation -> IO (Maybe Reservation)
 
 export
-evalReservation : (SPI spi) => spi -> ReservationExpr ty -> IO ty
-evalReservation spi (Log msg) = putStrLn msg
-evalReservation spi (Pure val) = pure val
-evalReservation spi (Bind val next) = evalReservation spi val >>= evalReservation spi . next
-evalReservation spi (SearchTrain time) = searchTrainAt spi time
-evalReservation spi (GetTypology trainId) = getTypologyOf spi trainId
-evalReservation spi (Reserve command) = confirmCommand spi command
+evalReservation : SPI spi => spi -> ReservationExpr ty -> IO ty
+evalReservation spi = evalCmd
+  where
+    evalCmd : ReservationExpr ty -> IO ty
+    evalCmd (Log msg) = putStrLn msg
+    evalCmd (Pure val) = pure val
+    evalCmd (Bind val next) = evalCmd val >>= evalCmd . next
+    evalCmd (SearchTrain time) = searchTrainAt spi time
+    evalCmd (GetTypology trainId) = getTypologyOf spi trainId
+    evalCmd (Reserve command) = confirmCommand spi command
