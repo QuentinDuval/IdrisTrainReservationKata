@@ -4,11 +4,7 @@ import ReservationExpr
 
 
 --------------------------------------------------------------------------------
--- The code (should follow the rule of the DSL)
--- Decoupling is pretty good:
--- * Invariants of the Business Rules are in the DSL
--- * Implementation of the SPI are in the interpreter
--- * Current implementation that satisfies the rules is exression of the DSL
+-- Occupancy
 --------------------------------------------------------------------------------
 
 record OccupancyRatio where
@@ -41,10 +37,7 @@ addOccupied : Nat -> OccupancyRatio -> OccupancyRatio
 addOccupied seatRequest r = record { occupied $= (+ seatRequest) } r
 
 --------------------------------------------------------------------------------
--- RULES:
--- TODO: sum the total seats to check that will not go over 70% of the train
--- TODO: check the typology of the coaches to put the same family in one coach
--- TODO: ideally, we should not go over 70% in one coach
+-- Implementing the rules of the Kata (inside the DSL)
 --------------------------------------------------------------------------------
 
 TrainMaxOccupancy : Double
