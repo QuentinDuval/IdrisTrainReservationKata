@@ -4,6 +4,8 @@ sourcedir = src
 
 modules =
   HexagonalSNCF,
+  ReservationApi,
+  ReservationEval
   ReservationExpr
 
 executable = TrainReservation

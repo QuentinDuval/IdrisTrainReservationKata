@@ -1,6 +1,4 @@
-module HexagonalSNCF
-
--- https://github.com/emilybache/KataTrainReservation
+module ReservationApi
 
 import ReservationExpr
 
