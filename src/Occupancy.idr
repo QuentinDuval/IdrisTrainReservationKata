@@ -31,6 +31,3 @@ Ord OccupancyRatio where
 
 Cast OccupancyRatio Double where
   cast = occupancyPercent
-
-addOccupied : Nat -> OccupancyRatio -> OccupancyRatio
-addOccupied seatRequest r = record { occupied $= (+ seatRequest) } r

@@ -30,6 +30,9 @@ coachToReservation : Nat -> (TrainId, CoachTypology) -> Reservation
 coachToReservation seatRequest (trainId, coach) =
   MkReservation trainId (coachId coach) (take seatRequest (availableSeats coach))
 
+addOccupied : Nat -> OccupancyRatio -> OccupancyRatio
+addOccupied seatRequest r = record { occupied $= (+ seatRequest) } r
+
 projectedOccupancy : Nat -> CoachTypology -> Double
 projectedOccupancy seatRequest = cast . addOccupied seatRequest . coachOccupancy
 
