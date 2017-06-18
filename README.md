@@ -5,14 +5,10 @@
 An implementation of a problem close to the challenged proposed in:
 https://github.com/emilybache/KataTrainReservation
 
-### Goal (Kata)
-
 The goal is to implement the domain of train reservation:
 * We should offer an API to reserve a given number of seats at a given date
 * The domain relies on Service Provider Interfaces (SPI)
 * The implementation should make sure to be as decoupled as possible to the SPI
-
-### Rules (Kata)
 
 The rules of the reservation of a train are the following:
 * We cannot reserve seats in a train if it bumps up the occupancy over 70%
