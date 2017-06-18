@@ -8,10 +8,7 @@ record OccupancyRatio where
   seatCount : Nat
 
 occupancyPercent : OccupancyRatio -> Double
-occupancyPercent r =
-  if occupied r >= seatCount r
-    then 1.0
-    else cast (occupied r) / cast (seatCount r)
+occupancyPercent r = cast (occupied r) / cast (seatCount r)
 
 Show OccupancyRatio where
   show r = "(" ++ show (occupied r) ++ ", " ++ show (seatCount r) ++ ")"

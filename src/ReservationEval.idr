@@ -9,27 +9,17 @@ import ReservationExpr
 -- Here, we implement a fake interpreter than for the example
 --------------------------------------------------------------------------------
 
-fakeTrainDB : List TrainTypology
-fakeTrainDB =
-  [ MkTrainTypology "T1" [MkCoachTypology "A" 100 [71..100], MkCoachTypology "B" 100 [71..100]] -- Full Train
-  , MkTrainTypology "T2" [MkCoachTypology "A" 100 [80..100], MkCoachTypology "B" 100 [50..100]] -- First coach full
-  , MkTrainTypology "T3" [MkCoachTypology "A" 100 [5..100]] -- Plenty of places
-  ]
-
-searchTrainAt : DateTime -> IO (List TrainId)
-searchTrainAt _ = pure (map trainId fakeTrainDB)
-
-getTypologyOf : TrainId -> IO (Maybe TrainTypology)
-getTypologyOf tid = pure $ find ((== tid). trainId) fakeTrainDB
-
-confirmCommand : Reservation -> IO (Maybe Reservation)
-confirmCommand r = pure (Just r)
+export
+interface SPI spi where
+  searchTrainAt : spi -> DateTime -> IO (List TrainId)
+  getTypologyOf : spi -> TrainId -> IO (Maybe TrainTypology)
+  confirmCommand : spi -> Reservation -> IO (Maybe Reservation)
 
 export
-evalReservation : ReservationExpr ty -> IO ty
-evalReservation (Log msg) = putStrLn msg
-evalReservation (Pure val) = pure val
-evalReservation (Bind val next) = evalReservation val >>= evalReservation . next
-evalReservation (SearchTrain time) = searchTrainAt time
-evalReservation (GetTypology trainId) = getTypologyOf trainId
-evalReservation (Reserve command) = confirmCommand command
+evalReservation : (SPI spi) => spi -> ReservationExpr ty -> IO ty
+evalReservation spi (Log msg) = putStrLn msg
+evalReservation spi (Pure val) = pure val
+evalReservation spi (Bind val next) = evalReservation spi val >>= evalReservation spi . next
+evalReservation spi (SearchTrain time) = searchTrainAt spi time
+evalReservation spi (GetTypology trainId) = getTypologyOf spi trainId
+evalReservation spi (Reserve command) = confirmCommand spi command
