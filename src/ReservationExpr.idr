@@ -68,7 +68,7 @@ Show ReservationResult where
 data ReservationExpr : Type -> Type where
   -- TODO: add state... to force a workflow (and add abort + confirm + pay)
   SearchTrain : DateTime -> ReservationExpr (List TrainId)
-  GetTypology : TrainId -> ReservationExpr TrainTypology
+  GetTypology : TrainId -> ReservationExpr (Maybe TrainTypology)
   Reserve : Reservation -> ReservationExpr (Maybe Reservation)
   Log : String -> ReservationExpr ()
   Pure : ta -> ReservationExpr ta

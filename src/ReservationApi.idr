@@ -49,8 +49,8 @@ reserve : ReservationRequest -> ReservationExpr ReservationResult
 reserve request = do
     trainIds <- SearchTrain (dateTime request)
     typologies <- sequence (map GetTypology trainIds)
-    let reservations = reservationsByDecreasingPreference (seatCount request) typologies
-    Log (show reservations)
+    let reservations = reservationsByDecreasingPreference (seatCount request) (mapMaybe id typologies)
+    Log ("Valid reservations (by preference): " ++ show reservations)
     confirmByPref reservations
   where
     confirmByPref [] = Pure NoTrainAvailable
