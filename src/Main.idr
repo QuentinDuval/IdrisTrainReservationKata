@@ -1,7 +1,12 @@
 module Main
 
 import HexagonalSNCF
+import ReservationExpr
+import ReservationEval
 
 main : IO ()
 main = do
-  printLn "TODO"
+  putStrLn "Acceptance Tests"
+  let request = MkReservationRequest 10 10
+  result <- evalReservation (reserve request)
+  printLn result

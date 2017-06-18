@@ -6,27 +6,6 @@ import ReservationExpr
 
 
 --------------------------------------------------------------------------------
--- Interpreter: this is the transformation from the abstract problem
--- to the real world (allows to plug the SPI without Dependency Injection)
---------------------------------------------------------------------------------
-
-evalReservation : ReservationExpr ty -> IO ty
-evalReservation (Log msg) = putStrLn msg
-evalReservation (Pure val) = pure val
-evalReservation (Bind val next) = evalReservation val >>= evalReservation . next
-evalReservation (SearchTrain dateTime) = pure ["T1", "T2"]
-evalReservation (GetTypology trainId) = do
-  putStrLn ("GetTypology: " ++ trainId)
-  if trainId == "T1"
-    then pure $ MkTrainTypology "T1" [MkCoachTypology "A" 100 [5..100]]
-    else pure $ MkTrainTypology "T2" [MkCoachTypology "A" 100 [5..100]]
-
-evalReservation (Reserve command) = do
-  putStrLn ("Reserve: " ++ show command)
-  pure $ Just command -- TODO: introduce errors
-
-
---------------------------------------------------------------------------------
 -- The code (should follow the rule of the DSL)
 -- Decoupling is pretty good:
 -- * Invariants of the Business Rules are in the DSL
@@ -105,6 +84,7 @@ reservationsByDecreasingPreference seatRequest trains =
       (best, next) = partition (belowThreshold CoachMaxOccupancy . projectedOccupancy seatRequest . snd) validCoaches
   in map (coachToReservation seatRequest) (best ++ next)
 
+export
 reserve : ReservationRequest -> ReservationExpr ReservationResult
 reserve request = do
     trainIds <- SearchTrain (dateTime request)
@@ -148,14 +128,8 @@ coach_reservation_test = do
 
 run_tests : IO ()
 run_tests = do
-  putStrLn "Occupancy Tests"
   occupancy_ratio_test
   coach_occupancy_test
   coach_reservation_test
-
-  putStrLn "Acceptance Tests"
-  let request = MkReservationRequest 10 10
-  result <- evalReservation (reserve request)
-  printLn result
 
 --
