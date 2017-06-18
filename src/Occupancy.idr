@@ -2,7 +2,6 @@ module Occupancy
 
 %access public export
 
-
 record OccupancyRatio where
   constructor MkOccupancyRatio
   occupied : Nat
