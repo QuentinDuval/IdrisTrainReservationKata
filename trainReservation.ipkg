@@ -1,0 +1,9 @@
+package foo
+
+sourcedir = src
+
+modules =
+  HexagonalSNCF
+
+executable = TrainReservation
+main = Main
