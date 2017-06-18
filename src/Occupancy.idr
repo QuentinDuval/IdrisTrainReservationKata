@@ -8,6 +8,12 @@ record OccupancyRatio where
   occupied : Nat
   seatCount : Nat
 
+occupancyPercent : OccupancyRatio -> Double
+occupancyPercent r =
+  if occupied r >= seatCount r
+    then 1.0
+    else cast (occupied r) / cast (seatCount r)
+
 Show OccupancyRatio where
   show r = "(" ++ show (occupied r) ++ ", " ++ show (seatCount r) ++ ")"
 
@@ -17,17 +23,14 @@ Semigroup OccupancyRatio where
 Monoid OccupancyRatio where
   neutral = MkOccupancyRatio 0 0
 
-occupancyPercent : OccupancyRatio -> Double
-occupancyPercent r =
-  if occupied r >= seatCount r
-    then 1.0
-    else cast (occupied r) / cast (seatCount r)
-
 Eq OccupancyRatio where
   r1 == r2 = occupancyPercent r1 == occupancyPercent r2
 
-belowThreshold : Double -> OccupancyRatio -> Bool
-belowThreshold threshold ratio = occupancyPercent ratio <= threshold
+Ord OccupancyRatio where
+  compare r1 r2 = compare (occupancyPercent r1) (occupancyPercent r2)
+
+Cast OccupancyRatio Double where
+  cast = occupancyPercent
 
 addOccupied : Nat -> OccupancyRatio -> OccupancyRatio
 addOccupied seatRequest r = record { occupied $= (+ seatRequest) } r

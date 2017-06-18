@@ -30,15 +30,15 @@ coachToReservation : Nat -> (TrainId, CoachTypology) -> Reservation
 coachToReservation seatRequest (trainId, coach) =
   MkReservation trainId (coachId coach) (take seatRequest (availableSeats coach))
 
-projectedOccupancy : Nat -> CoachTypology -> OccupancyRatio -- TODO: memoize
-projectedOccupancy seatRequest = addOccupied seatRequest . coachOccupancy
+projectedOccupancy : Nat -> CoachTypology -> Double
+projectedOccupancy seatRequest = cast . addOccupied seatRequest . coachOccupancy
 
 reservationsByDecreasingPreference : Nat -> List TrainTypology -> List Reservation
 reservationsByDecreasingPreference seatRequest trains =
-  let freeTrains = filter (belowThreshold TrainMaxOccupancy . addOccupied seatRequest . trainOccupancy) trains
+  let freeTrains = filter ((<= TrainMaxOccupancy) . cast . addOccupied seatRequest . trainOccupancy) trains
       allCoaches = concatMap trainTypologies freeTrains
-      validCoaches = filter (belowThreshold 1.0 . projectedOccupancy seatRequest . snd) allCoaches
-      (best, next) = partition (belowThreshold CoachMaxOccupancy . projectedOccupancy seatRequest . snd) validCoaches
+      validCoaches = filter ((<= 1.0) . projectedOccupancy seatRequest . snd) allCoaches
+      (best, next) = partition ((<= CoachMaxOccupancy) . projectedOccupancy seatRequest . snd) validCoaches
   in map (coachToReservation seatRequest) (best ++ next)
 
 export
@@ -69,9 +69,9 @@ assertEq g e = if g == e
 
 occupancy_ratio_test : IO ()
 occupancy_ratio_test = do
-  assertEq True $ belowThreshold 0.7 (MkOccupancyRatio 6 10)
-  assertEq True $ belowThreshold 0.7 (MkOccupancyRatio 7 10)
-  assertEq False $ belowThreshold 0.7 (MkOccupancyRatio 8 10)
+  assertEq True $ cast (MkOccupancyRatio 6 10) <= 0.7
+  assertEq True $ cast (MkOccupancyRatio 7 10) <= 0.7
+  assertEq False $ cast (MkOccupancyRatio 8 10) <= 0.7
 
 coach_occupancy_test : IO ()
 coach_occupancy_test = do
