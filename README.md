@@ -60,3 +60,7 @@ The decoupling is greater:
 The type safety is stronger:
 * We can enforce a workflow in the DSL by using the type system (making sure to validate a reservation for instance)
 * The code running in the DSL just cannot break the rules and connect to random services (stronger dependencies insurances)
+
+## Conclusion
+
+As much as some of the tactical patterns of the Blue Book are not directly applicable to pure Functional Programming languages, other patterns are available in Haskell and Idris that offer different trade-offs (and potentially stronger domain invariants).
