@@ -3,9 +3,9 @@ package foo
 sourcedir = src
 
 modules =
-  HexagonalSNCF,
+  Occupancy,
   ReservationApi,
-  ReservationEval
+  ReservationEval,
   ReservationExpr
 
 executable = TrainReservation
